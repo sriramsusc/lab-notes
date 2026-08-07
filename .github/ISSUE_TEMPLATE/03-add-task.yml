@@ -1,0 +1,84 @@
+name: ✅ Add a task
+description: Put something on the shared checklist.
+title: "[task] "
+labels: ["intake", "task", "new-task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Creates an entry under `_tasks/` and puts it on the open checklist.
+        Closing it later requires a written report, so a clear definition of done here
+        makes that easier.
+
+  - type: input
+    id: title
+    attributes:
+      label: Task
+      description: Short and specific — a thing that can actually be finished.
+      placeholder: Reproduce Table 2 of the Vaswani paper on our dataset
+    validations:
+      required: true
+
+  - type: dropdown
+    id: assigned
+    attributes:
+      label: Assigned to
+      options:
+        - Sriram
+        - Professor
+        - Both of us
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - High
+        - Medium
+        - Low
+      default: 1
+    validations:
+      required: true
+
+  - type: input
+    id: due
+    attributes:
+      label: Target date
+      description: Optional. Use YYYY-MM-DD so it sorts correctly.
+      placeholder: "2026-09-01"
+
+  - type: input
+    id: paper
+    attributes:
+      label: Related paper ID
+      description: Optional. Links this task to a paper page.
+      placeholder: attention-is-all-you-need
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-separated.
+      placeholder: experiments, writing
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to be done
+      description: The actual scope, plus any context whoever picks this up will need.
+    validations:
+      required: true
+
+  - type: textarea
+    id: done-when
+    attributes:
+      label: Definition of done
+      description: How we will know this is finished. Be concrete — this is what the completion report gets checked against.
+      placeholder: |
+        - Numbers within 1 BLEU of the reported table
+        - Script committed under scripts/
+        - Results written up on the paper page
+    validations:
+      required: true

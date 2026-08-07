@@ -1,0 +1,8 @@
+{%- comment -%}
+Builds a "new issue" URL for one of the intake forms.
+
+  {% include new_issue.html template='02-paper-summary.yml' field='paper-id' value=page.uid %}
+
+`field`/`value` are optional and prefill a single form field.
+{%- endcomment -%}
+https://github.com/{{ site.repository }}/issues/new?template={{ include.template }}{% if include.field and include.value %}&{{ include.field }}={{ include.value | url_encode }}{% endif %}

@@ -1,0 +1,93 @@
+name: 📄 Add a paper
+description: Put a paper on the reading list. A summary comes later, through its own form.
+title: "[paper] "
+labels: ["intake", "paper", "new-paper"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fills in a new entry under `_papers/`. Everything here becomes page metadata,
+        so it is worth being accurate — you can always edit the file afterwards.
+
+  - type: input
+    id: title
+    attributes:
+      label: Paper title
+      placeholder: Attention Is All You Need
+    validations:
+      required: true
+
+  - type: input
+    id: authors
+    attributes:
+      label: Authors
+      description: Comma-separated, or "First Author et al."
+      placeholder: Vaswani et al.
+
+  - type: input
+    id: year
+    attributes:
+      label: Year
+      placeholder: "2017"
+
+  - type: input
+    id: venue
+    attributes:
+      label: Venue
+      placeholder: NeurIPS
+
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      description: arXiv page, PDF, or publisher URL.
+      placeholder: https://arxiv.org/abs/1706.03762
+
+  - type: input
+    id: doi
+    attributes:
+      label: DOI
+      placeholder: 10.48550/arXiv.1706.03762
+
+  - type: dropdown
+    id: assigned
+    attributes:
+      label: Who is summarizing it
+      options:
+        - Sriram
+        - Professor
+        - Either of us
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - High
+        - Medium
+        - Low
+      default: 1
+
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma-separated. Used for filtering on the Papers page.
+      placeholder: transformers, attention, nlp
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why we're reading it
+      description: One or two sentences on how it connects to what we're working on.
+      placeholder: Baseline architecture for the sequence models we want to adapt.
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Initial notes
+      description: Optional. Anything to flag before reading — sections to focus on, related work, prior context.

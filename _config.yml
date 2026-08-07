@@ -1,0 +1,41 @@
+title: Lab Notes
+tagline: Reading list, summaries, and shared tasks
+description: >-
+  A shared tracker for the papers we are reading and the work we are doing.
+
+url: "https://sriramsusc.github.io"
+baseurl: "/lab-notes"
+repository: sriramsusc/lab-notes
+
+collections:
+  papers:
+    output: true
+    permalink: /papers/:name/
+  tasks:
+    output: true
+    permalink: /tasks/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: papers
+    values:
+      layout: paper
+  - scope:
+      path: ""
+      type: tasks
+    values:
+      layout: task
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - CONTRIBUTING.md
+  - vendor
+  - .github

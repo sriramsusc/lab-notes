@@ -1,0 +1,67 @@
+---
+layout: default
+title: Tasks
+nav: tasks
+permalink: /tasks/
+---
+{%- assign open_tasks = site.tasks | where_exp: "t", "t.status != 'done'" | sort: "due" -%}
+{%- assign done_tasks = site.tasks | where_exp: "t", "t.status == 'done'" | sort: "completed_on" | reverse -%}
+
+<section class="page-head">
+  <div>
+    <h1>Tasks</h1>
+    <p class="lede">A shared checklist. Ticking something off requires a written account of what was done &mdash; that write-up becomes the task's page.</p>
+  </div>
+  <a class="btn btn--primary" href="{% include new_issue.html template='03-add-task.yml' %}">+ Add a task</a>
+</section>
+
+<section>
+  <h2 class="section-rule">Open <span class="count-badge">{{ open_tasks | size }}</span></h2>
+  {% if open_tasks.size == 0 %}
+    <p class="empty">Nothing open right now.</p>
+  {% else %}
+    <ul class="checklist">
+      {% for t in open_tasks %}
+        <li class="check-item">
+          <span class="check-box" aria-hidden="true"></span>
+          <div class="check-main">
+            <a class="row-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
+            <p class="row-sub">
+              {% include status.html value=t.status %}
+              {% if t.assigned_to %}<span class="row-who">{{ t.assigned_to }}</span>{% endif %}
+              {% if t.priority %}<span class="prio prio--{{ t.priority | downcase }}">{{ t.priority }}</span>{% endif %}
+              {% if t.due %}<span>due {{ t.due }}</span>{% endif %}
+              {% if t.created %}<span>opened {{ t.created }}</span>{% endif %}
+            </p>
+          </div>
+          <a class="row-action" href="{% include new_issue.html template='04-complete-task.yml' field='task-id' value=t.uid %}">Complete</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>
+
+<section>
+  <h2 class="section-rule">Completed <span class="count-badge">{{ done_tasks | size }}</span></h2>
+  {% if done_tasks.size == 0 %}
+    <p class="empty">Nothing completed yet.</p>
+  {% else %}
+    <ul class="checklist checklist--done">
+      {% for t in done_tasks %}
+        <li class="check-item">
+          <span class="check-box check-box--on" aria-hidden="true">&#10003;</span>
+          <div class="check-main">
+            <a class="row-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
+            <p class="row-sub">
+              {% if t.completed_by %}<span class="row-who">{{ t.completed_by }}</span>{% endif %}
+              {% if t.completed_on %}<span>completed {{ t.completed_on }}</span>{% endif %}
+              {% if t.time_spent %}<span>{{ t.time_spent }}</span>{% endif %}
+            </p>
+            {% if t.outcome %}<p class="row-outcome">{{ t.outcome | strip_html | truncate: 180 }}</p>{% endif %}
+          </div>
+          <a class="row-action" href="{{ t.url | relative_url }}">Read report</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>

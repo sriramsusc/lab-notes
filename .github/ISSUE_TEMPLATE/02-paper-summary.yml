@@ -1,0 +1,89 @@
+name: ✍️ Submit a paper summary
+description: Write up a paper already on the reading list. This fills in its page and marks it summarized.
+title: "[summary] "
+labels: ["intake", "paper", "summary"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The easiest way to open this form is the **Summarize** button next to a paper on the
+        site — it prefills the paper ID. Submitting again for the same paper overwrites the
+        previous summary, so revisions are fine.
+
+        Short summaries get bounced back automatically. Write like you're explaining it to
+        someone who has not read the paper.
+
+  - type: input
+    id: paper-id
+    attributes:
+      label: Paper ID
+      description: The slug from the paper's URL, e.g. `attention-is-all-you-need`. The paper title also works.
+      placeholder: attention-is-all-you-need
+    validations:
+      required: true
+
+  - type: dropdown
+    id: author
+    attributes:
+      label: Who wrote this summary
+      options:
+        - Sriram
+        - Professor
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and motivation
+      description: What question is the paper answering, and why did it need answering?
+    validations:
+      required: true
+
+  - type: textarea
+    id: method
+    attributes:
+      label: Method
+      description: How does it work? Enough detail that we could argue about it without reopening the PDF.
+    validations:
+      required: true
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Key results
+      description: The numbers and comparisons that matter, plus what the experiments actually establish.
+    validations:
+      required: true
+
+  - type: textarea
+    id: takeaways
+    attributes:
+      label: Takeaways for our work
+      description: What we should borrow, avoid, or test against.
+    validations:
+      required: true
+
+  - type: textarea
+    id: limitations
+    attributes:
+      label: Limitations and open questions
+      description: Optional but encouraged. Where does it overclaim, and what did it leave unanswered?
+
+  - type: textarea
+    id: related
+    attributes:
+      label: Related work and follow-ups
+      description: Optional. Papers worth adding to the queue because of this one.
+
+  - type: dropdown
+    id: rating
+    attributes:
+      label: How relevant is this to us
+      options:
+        - Core — we should build on this
+        - Useful — worth keeping in mind
+        - Peripheral — read and filed
+      default: 1
+    validations:
+      required: true

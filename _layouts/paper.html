@@ -1,0 +1,61 @@
+---
+layout: default
+nav: papers
+---
+<article class="doc">
+
+  <p class="crumb"><a href="{{ '/papers/' | relative_url }}">&larr; All papers</a></p>
+
+  <header class="doc-head">
+    {% include status.html value=page.status %}
+    <h1>{{ page.title }}</h1>
+    {% if page.authors %}<p class="doc-byline">{{ page.authors }}{% if page.year %} &middot; {{ page.year }}{% endif %}{% if page.venue %} &middot; <em>{{ page.venue }}</em>{% endif %}</p>{% endif %}
+  </header>
+
+  <dl class="meta-grid">
+    {% if page.link %}
+      <div><dt>Link</dt><dd><a href="{{ page.link }}" rel="noopener">{{ page.link | truncate: 60 }}</a></dd></div>
+    {% endif %}
+    {% if page.doi %}
+      <div><dt>DOI</dt><dd><a href="https://doi.org/{{ page.doi }}" rel="noopener">{{ page.doi }}</a></dd></div>
+    {% endif %}
+    {% if page.assigned_to %}<div><dt>Assigned to</dt><dd>{{ page.assigned_to }}</dd></div>{% endif %}
+    {% if page.priority %}<div><dt>Priority</dt><dd>{{ page.priority }}</dd></div>{% endif %}
+    {% if page.added %}<div><dt>Added</dt><dd>{{ page.added }}{% if page.added_by %} by {{ page.added_by }}{% endif %}</dd></div>{% endif %}
+    {% if page.summarized_on %}<div><dt>Summarized</dt><dd>{{ page.summarized_on }}{% if page.summarized_by %} by {{ page.summarized_by }}{% endif %}</dd></div>{% endif %}
+    {% if page.issue %}<div><dt>Source</dt><dd><a href="https://github.com/{{ site.repository }}/issues/{{ page.issue }}" rel="noopener">Issue #{{ page.issue }}</a></dd></div>{% endif %}
+  </dl>
+
+  {% if page.tags and page.tags.size > 0 %}
+    <p class="tag-row">{% for t in page.tags %}<a class="tag" href="{{ '/papers/' | relative_url }}#tag={{ t | url_encode }}">{{ t }}</a>{% endfor %}</p>
+  {% endif %}
+
+  {% if page.why %}
+    <section class="callout">
+      <h2>Why we're reading it</h2>
+      {{ page.why | markdownify }}
+    </section>
+  {% endif %}
+
+  <section class="prose">
+    {% if page.status == 'summarized' %}
+      <h2 class="section-rule">Summary</h2>
+    {% endif %}
+    {{ content }}
+  </section>
+
+  {% if page.status != 'summarized' %}
+    <section class="cta">
+      <h2>No summary yet</h2>
+      <p>Write it through the form &mdash; the bot will file it into this page and mark the paper summarized.</p>
+      <a class="btn btn--primary" href="{% include new_issue.html template='02-paper-summary.yml' field='paper-id' value=page.uid %}">Write the summary &rarr;</a>
+    </section>
+  {% else %}
+    <section class="cta cta--quiet">
+      <p>Need to revise this summary? Submitting the form again overwrites it.</p>
+      <a class="btn" href="{% include new_issue.html template='02-paper-summary.yml' field='paper-id' value=page.uid %}">Revise summary</a>
+      <a class="btn" href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Edit file directly</a>
+    </section>
+  {% endif %}
+
+</article>

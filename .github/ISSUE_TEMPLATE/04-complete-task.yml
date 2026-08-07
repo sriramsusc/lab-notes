@@ -1,0 +1,95 @@
+name: 🏁 Complete a task
+description: Tick a task off — requires a detailed account of what was done.
+title: "[done] "
+labels: ["intake", "task", "completed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The easiest way to open this form is the **Complete** button next to a task on the site —
+        it prefills the task ID.
+
+        **This form is deliberately demanding.** A task is not done because you say it is; it is
+        done because there is a record of what happened that someone can read six months from now.
+        Reports that are too short are rejected automatically with a comment telling you what to add.
+
+  - type: input
+    id: task-id
+    attributes:
+      label: Task ID
+      description: The slug from the task's URL. The task title also works.
+      placeholder: reproduce-table-2-on-our-dataset
+    validations:
+      required: true
+
+  - type: dropdown
+    id: author
+    attributes:
+      label: Who did the work
+      options:
+        - Sriram
+        - Professor
+        - Both of us
+    validations:
+      required: true
+
+  - type: input
+    id: outcome
+    attributes:
+      label: One-line outcome
+      description: The headline. Shows up next to the task on the checklist.
+      placeholder: Reproduced within 0.4 BLEU; the gap traces to tokenizer differences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-was-done
+    attributes:
+      label: What you did
+      description: The actual work, step by step. Someone should be able to follow this without asking you anything.
+    validations:
+      required: true
+
+  - type: textarea
+    id: how
+    attributes:
+      label: How you did it
+      description: Approach, tools, configs, commands, file paths, commits. The reproducible part.
+    validations:
+      required: true
+
+  - type: textarea
+    id: results
+    attributes:
+      label: Results and evidence
+      description: Numbers, outputs, links to commits or runs. What shows this is actually finished?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problems
+    attributes:
+      label: Problems hit and how you got around them
+      description: Optional but valuable — this is the part we forget and re-discover later.
+
+  - type: textarea
+    id: next
+    attributes:
+      label: What this unblocks, and what's left
+      description: Optional. Loose ends, follow-up tasks worth filing.
+
+  - type: input
+    id: time-spent
+    attributes:
+      label: Rough time spent
+      placeholder: ~6 hours over three days
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before submitting
+      options:
+        - label: The definition of done on the task page is actually met.
+          required: true
+        - label: Anything I produced (code, notes, data) is committed or linked above.
+          required: true

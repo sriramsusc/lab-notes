@@ -1,0 +1,97 @@
+---
+layout: default
+title: Dashboard
+nav: home
+---
+{%- assign papers = site.papers -%}
+{%- assign tasks = site.tasks -%}
+{%- assign unsummarized = papers | where_exp: "p", "p.status != 'summarized'" -%}
+{%- assign summarized = papers | where_exp: "p", "p.status == 'summarized'" -%}
+{%- assign open_tasks = tasks | where_exp: "t", "t.status != 'done'" -%}
+{%- assign done_tasks = tasks | where_exp: "t", "t.status == 'done'" -%}
+
+<section class="hero">
+  <h1>{{ site.title }}</h1>
+  <p class="lede">{{ site.description }} Add things through the forms below; a bot turns each submission into a documented markdown file in the repo and rebuilds this site.</p>
+  <div class="hero-actions">
+    <a class="btn btn--primary" href="{% include new_issue.html template='01-add-paper.yml' %}">+ Add a paper</a>
+    <a class="btn btn--primary" href="{% include new_issue.html template='03-add-task.yml' %}">+ Add a task</a>
+    <a class="btn" href="{% include new_issue.html template='02-paper-summary.yml' %}">Submit a summary</a>
+    <a class="btn" href="{% include new_issue.html template='04-complete-task.yml' %}">Complete a task</a>
+  </div>
+</section>
+
+<section class="stats">
+  <a class="stat" href="{{ '/papers/' | relative_url }}">
+    <span class="stat-num">{{ unsummarized | size }}</span>
+    <span class="stat-label">papers awaiting a summary</span>
+  </a>
+  <a class="stat" href="{{ '/papers/' | relative_url }}">
+    <span class="stat-num">{{ summarized | size }}</span>
+    <span class="stat-label">papers summarized</span>
+  </a>
+  <a class="stat" href="{{ '/tasks/' | relative_url }}">
+    <span class="stat-num">{{ open_tasks | size }}</span>
+    <span class="stat-label">open tasks</span>
+  </a>
+  <a class="stat" href="{{ '/tasks/' | relative_url }}">
+    <span class="stat-num">{{ done_tasks | size }}</span>
+    <span class="stat-label">tasks completed</span>
+  </a>
+</section>
+
+<div class="two-col">
+  <section>
+    <h2 class="section-rule">Reading queue</h2>
+    {% if unsummarized.size == 0 %}
+      <p class="empty">Nothing in the queue. Every paper has a summary.</p>
+    {% else %}
+      <ul class="card-list">
+        {% assign queue = unsummarized | sort: "added" | reverse %}
+        {% for p in queue limit: 5 %}
+          <li class="card">
+            <a class="card-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
+            <p class="card-meta">
+              {% include status.html value=p.status %}
+              {% if p.assigned_to %}<span>&rarr; {{ p.assigned_to }}</span>{% endif %}
+              {% if p.year %}<span>{{ p.year }}</span>{% endif %}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+      {% if unsummarized.size > 5 %}<p><a href="{{ '/papers/' | relative_url }}">See all {{ unsummarized | size }} &rarr;</a></p>{% endif %}
+    {% endif %}
+  </section>
+
+  <section>
+    <h2 class="section-rule">Open tasks</h2>
+    {% if open_tasks.size == 0 %}
+      <p class="empty">No open tasks. Enjoy it while it lasts.</p>
+    {% else %}
+      <ul class="card-list">
+        {% assign q = open_tasks | sort: "due" %}
+        {% for t in q limit: 5 %}
+          <li class="card">
+            <a class="card-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
+            <p class="card-meta">
+              {% include status.html value=t.status %}
+              {% if t.assigned_to %}<span>&rarr; {{ t.assigned_to }}</span>{% endif %}
+              {% if t.due %}<span>due {{ t.due }}</span>{% endif %}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+      {% if open_tasks.size > 5 %}<p><a href="{{ '/tasks/' | relative_url }}">See all {{ open_tasks | size }} &rarr;</a></p>{% endif %}
+    {% endif %}
+  </section>
+</div>
+
+<section class="how">
+  <h2 class="section-rule">How this works</h2>
+  <ol class="steps">
+    <li><strong>You fill in a form.</strong> Each button above opens a structured GitHub issue form with the fields we care about.</li>
+    <li><strong>A bot checks it.</strong> It confirms you're a collaborator and that summaries and completion reports are actually substantial &mdash; thin ones get bounced back with a comment.</li>
+    <li><strong>It becomes a file.</strong> The bot commits a markdown file to <code>_papers/</code> or <code>_tasks/</code> with your metadata in the front matter, then closes the issue.</li>
+    <li><strong>The site rebuilds.</strong> This page updates within a minute or two.</li>
+  </ol>
+</section>

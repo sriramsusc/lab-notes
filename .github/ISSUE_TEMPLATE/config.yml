@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussion, questions, half-formed ideas
+    url: https://github.com/sriramsusc/lab-notes/issues/new
+    about: Anything that isn't a paper or a task — open a plain issue instead.

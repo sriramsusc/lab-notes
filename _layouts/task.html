@@ -1,0 +1,45 @@
+---
+layout: default
+nav: tasks
+---
+<article class="doc">
+
+  <p class="crumb"><a href="{{ '/tasks/' | relative_url }}">&larr; All tasks</a></p>
+
+  <header class="doc-head">
+    {% include status.html value=page.status %}
+    <h1>{{ page.title }}</h1>
+  </header>
+
+  <dl class="meta-grid">
+    {% if page.assigned_to %}<div><dt>Assigned to</dt><dd>{{ page.assigned_to }}</dd></div>{% endif %}
+    {% if page.priority %}<div><dt>Priority</dt><dd>{{ page.priority }}</dd></div>{% endif %}
+    {% if page.due %}<div><dt>Due</dt><dd>{{ page.due }}</dd></div>{% endif %}
+    {% if page.created %}<div><dt>Created</dt><dd>{{ page.created }}{% if page.created_by %} by {{ page.created_by }}{% endif %}</dd></div>{% endif %}
+    {% if page.completed_on %}<div><dt>Completed</dt><dd>{{ page.completed_on }}{% if page.completed_by %} by {{ page.completed_by }}{% endif %}</dd></div>{% endif %}
+    {% if page.time_spent %}<div><dt>Time spent</dt><dd>{{ page.time_spent }}</dd></div>{% endif %}
+    {% if page.paper %}<div><dt>Related paper</dt><dd><a href="{{ '/papers/' | append: page.paper | append: '/' | relative_url }}">{{ page.paper }}</a></dd></div>{% endif %}
+    {% if page.issue %}<div><dt>Source</dt><dd><a href="https://github.com/{{ site.repository }}/issues/{{ page.issue }}" rel="noopener">Issue #{{ page.issue }}</a></dd></div>{% endif %}
+  </dl>
+
+  {% if page.tags and page.tags.size > 0 %}
+    <p class="tag-row">{% for t in page.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>
+  {% endif %}
+
+  <section class="prose">
+    {{ content }}
+  </section>
+
+  {% if page.status != 'done' %}
+    <section class="cta">
+      <h2>Still open</h2>
+      <p>Closing this task requires a detailed write-up of what you actually did &mdash; the bot rejects short reports.</p>
+      <a class="btn btn--primary" href="{% include new_issue.html template='04-complete-task.yml' field='task-id' value=page.uid %}">Complete this task &rarr;</a>
+    </section>
+  {% else %}
+    <section class="cta cta--quiet">
+      <a class="btn" href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Edit file directly</a>
+    </section>
+  {% endif %}
+
+</article>

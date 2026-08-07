@@ -1,0 +1,104 @@
+---
+layout: default
+title: Papers
+nav: papers
+permalink: /papers/
+---
+<section class="page-head">
+  <div>
+    <h1>Papers</h1>
+    <p class="lede">{{ site.papers | size }} paper{% if site.papers.size != 1 %}s{% endif %} tracked. Each one gets a written summary before it counts as read.</p>
+  </div>
+  <a class="btn btn--primary" href="{% include new_issue.html template='01-add-paper.yml' %}">+ Add a paper</a>
+</section>
+
+{% if site.papers.size == 0 %}
+  <p class="empty">No papers yet. Add the first one with the button above.</p>
+{% else %}
+
+<div class="filters" data-filters>
+  <input type="search" id="q" placeholder="Search title, authors, tags&hellip;" aria-label="Search papers" autocomplete="off">
+  <div class="chips" role="group" aria-label="Filter by status">
+    <button class="chip is-on" data-status="all">All</button>
+    <button class="chip" data-status="to-read">To read</button>
+    <button class="chip" data-status="reading">Reading</button>
+    <button class="chip" data-status="summarized">Summarized</button>
+  </div>
+  <p class="filter-count" id="count" aria-live="polite"></p>
+</div>
+
+<ul class="row-list" id="paper-list">
+  {% assign sorted = site.papers | sort: "added" | reverse %}
+  {% for p in sorted %}
+    {%- assign tagstr = p.tags | join: ' ' -%}
+    {%- capture haystack -%}
+      {{ p.title }} {{ p.authors }} {{ p.venue }} {{ p.year }} {{ p.assigned_to }} {{ tagstr }}
+    {%- endcapture -%}
+    <li class="row"
+        data-status="{{ p.status | default: 'to-read' }}"
+        data-search="{{ haystack | downcase | strip_newlines | normalize_whitespace | escape }}">
+      <div class="row-main">
+        <a class="row-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
+        <p class="row-sub">
+          {%- if p.authors %}{{ p.authors | truncate: 70 }}{% endif -%}
+          {%- if p.year %} &middot; {{ p.year }}{% endif -%}
+          {%- if p.venue %} &middot; {{ p.venue }}{% endif -%}
+        </p>
+        {% if p.tags and p.tags.size > 0 %}
+          <p class="tag-row">{% for t in p.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>
+        {% endif %}
+      </div>
+      <div class="row-side">
+        {% include status.html value=p.status %}
+        {% if p.assigned_to %}<span class="row-who">{{ p.assigned_to }}</span>{% endif %}
+        {% if p.status != 'summarized' %}
+          <a class="row-action" href="{% include new_issue.html template='02-paper-summary.yml' field='paper-id' value=p.uid %}">Summarize</a>
+        {% endif %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+<p class="empty" id="no-results" hidden>Nothing matches those filters.</p>
+
+<script>
+(function () {
+  var rows  = Array.prototype.slice.call(document.querySelectorAll('#paper-list .row'));
+  var q     = document.getElementById('q');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var count = document.getElementById('count');
+  var none  = document.getElementById('no-results');
+  var status = 'all';
+
+  function apply() {
+    var term = q.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (row) {
+      var okStatus = status === 'all' || row.dataset.status === status;
+      var okTerm   = !term || row.dataset.search.indexOf(term) !== -1;
+      var show = okStatus && okTerm;
+      row.hidden = !show;
+      if (show) shown++;
+    });
+    count.textContent = shown + ' of ' + rows.length + ' shown';
+    none.hidden = shown !== 0;
+  }
+
+  q.addEventListener('input', apply);
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.classList.remove('is-on'); });
+      chip.classList.add('is-on');
+      status = chip.dataset.status;
+      apply();
+    });
+  });
+
+  // Support /papers/#tag=foo links coming from a paper page.
+  var hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+  if (hash.indexOf('tag=') === 0) { q.value = hash.slice(4); }
+
+  apply();
+})();
+</script>
+{% endif %}

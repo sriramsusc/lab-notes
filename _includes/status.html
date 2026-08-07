@@ -1,0 +1,5 @@
+{%- comment -%}
+Renders a status pill. {% include status.html value=page.status %}
+{%- endcomment -%}
+{%- assign s = include.value | default: 'unknown' -%}
+<span class="pill pill--{{ s }}">{{ s | replace: '-', ' ' }}</span>

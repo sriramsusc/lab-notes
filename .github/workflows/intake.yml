@@ -1,0 +1,96 @@
+name: Intake
+
+# Turns submitted issue forms into markdown files in the repo.
+# Editing a rejected issue re-runs this, so people can fix and resubmit in place.
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+# One at a time, so two submissions can never race on the same push.
+concurrency:
+  group: intake
+  cancel-in-progress: false
+
+jobs:
+  intake:
+    if: >-
+      github.event.issue.state == 'open' &&
+      contains(github.event.issue.labels.*.name, 'intake')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Parse and validate the submission
+        id: intake
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          AUTHOR_ASSOCIATION: ${{ github.event.issue.author_association }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: node .github/scripts/intake.js
+
+      - name: Explain what needs fixing
+        if: steps.intake.outputs.status == 'reject'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ steps.intake.outputs.message }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$NUMBER" --body "$BODY"
+          gh issue edit "$NUMBER" --add-label "needs-work" || true
+
+      - name: Commit the new file
+        if: steps.intake.outputs.status == 'ok'
+        env:
+          COMMIT_MSG: ${{ steps.intake.outputs.commit }}
+          NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.event.issue.user.login }}
+        run: |
+          git config user.name  "lab-notes bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add _papers _tasks
+          if git diff --cached --quiet; then
+            echo "Nothing changed on disk — skipping commit."
+            exit 0
+          fi
+          git commit -m "$COMMIT_MSG" -m "Submitted by @$ACTOR in #$NUMBER."
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Close the issue
+        if: steps.intake.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ steps.intake.outputs.message }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue edit "$NUMBER" --remove-label "needs-work" || true
+          gh issue comment "$NUMBER" --body "$BODY
+
+          ---
+          The site rebuilds automatically and should show this within a minute or two."
+          gh issue close "$NUMBER" --reason completed
+
+      - name: Report a crash on the issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$NUMBER" --body "The intake bot hit an error and could not file this.
+          Nothing was written to the repo.
+
+          [See the failed run]($RUN_URL) — then edit this issue to retry."

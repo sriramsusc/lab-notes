@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} &middot; {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description | strip_newlines }}">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#128218;</text></svg>">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{{ '/' | relative_url }}">
+      <span class="brand-mark">LN</span>
+      <span class="brand-text">
+        <strong>{{ site.title }}</strong>
+        <small>{{ site.tagline }}</small>
+      </span>
+    </a>
+    <nav class="site-nav">
+      <a href="{{ '/papers/' | relative_url }}" {% if page.nav == 'papers' %}aria-current="page"{% endif %}>Papers</a>
+      <a href="{{ '/tasks/' | relative_url }}" {% if page.nav == 'tasks' %}aria-current="page"{% endif %}>Tasks</a>
+      <a href="https://github.com/{{ site.repository }}" class="nav-repo" rel="noopener">Repo &#8599;</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  {{ content }}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Everything on this site is generated from markdown in
+      <a href="https://github.com/{{ site.repository }}" rel="noopener">{{ site.repository }}</a>.
+      Add entries through the forms &mdash; a bot writes the files for you.</p>
+    <p class="footer-links">
+      <a href="{% include new_issue.html template='01-add-paper.yml' %}">Add a paper</a>
+      <a href="{% include new_issue.html template='03-add-task.yml' %}">Add a task</a>
+    </p>
+  </div>
+</footer>
+</body>
+</html>
