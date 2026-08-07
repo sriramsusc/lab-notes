@@ -164,11 +164,34 @@ string in `intake.js` or that field will silently come through empty.
 
 ## First-time setup
 
-Already done if you cloned this from the working repo, but for the record:
+All of this is already done on this repo. It's recorded here because if you ever
+recreate the repo from scratch, missing any of it breaks the bot.
 
 1. Settings → Pages → Source: **GitHub Actions**
 2. Settings → Actions → General → Workflow permissions: **Read and write**
-3. Push to `main` — the site builds and deploys itself
+3. **Create the labels** (see below)
+4. Push to `main` — the site builds and deploys itself
+
+### The labels are load-bearing
+
+GitHub does **not** create labels that an issue form references — if a label
+doesn't already exist in the repo, the form applies nothing. The intake workflow
+triggers on the `intake` label, so with the labels missing every submission would
+sit there and nothing would happen, with no error anywhere. Recreate them with:
+
+```bash
+gh label create intake     --color 0e8a16 --description "Submitted through a form; the intake bot handles it"
+gh label create paper      --color 1d76db --description "Relates to a paper"
+gh label create task       --color 5319e7 --description "Relates to a task"
+gh label create new-paper  --color c2e0c6 --description "Adds a paper to the reading list"
+gh label create summary    --color bfd4f2 --description "Submits a paper summary"
+gh label create new-task   --color d4c5f9 --description "Adds a task to the checklist"
+gh label create completed  --color 0e8a16 --description "Submits a task completion report"
+gh label create needs-work --color d93f0b --description "Bounced back by the intake bot; edit the issue to fix"
+```
+
+The same applies if you add a new form: any label in its `labels:` list has to
+exist first.
 
 ---
 
