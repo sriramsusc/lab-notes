@@ -22,17 +22,6 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: author
-    attributes:
-      label: Who did the work
-      options:
-        - Sriram
-        - Professor
-        - Both of us
-    validations:
-      required: true
-
   - type: input
     id: outcome
     attributes:
@@ -70,7 +59,7 @@ body:
     id: problems
     attributes:
       label: Problems hit and how you got around them
-      description: Optional but valuable — this is the part we forget and re-discover later.
+      description: Optional but valuable — this is the part you forget and re-discover later.
 
   - type: textarea
     id: next
@@ -89,7 +78,7 @@ body:
     attributes:
       label: Before submitting
       options:
-        - label: The definition of done on the task page is actually met.
+        - label: This is genuinely finished, not mostly finished.
           required: true
         - label: Anything I produced (code, notes, data) is committed or linked above.
           required: true

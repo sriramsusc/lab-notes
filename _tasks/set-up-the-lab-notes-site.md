@@ -2,7 +2,6 @@
 uid: "set-up-the-lab-notes-site"
 title: "Set up the Lab Notes site and intake workflow"
 status: done
-assigned_to: "Sriram"
 priority: "High"
 created: 2026-08-07
 created_by: sriramsusc

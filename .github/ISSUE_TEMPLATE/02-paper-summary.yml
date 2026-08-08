@@ -22,16 +22,6 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: author
-    attributes:
-      label: Who wrote this summary
-      options:
-        - Sriram
-        - Professor
-    validations:
-      required: true
-
   - type: textarea
     id: problem
     attributes:
@@ -44,7 +34,7 @@ body:
     id: method
     attributes:
       label: Method
-      description: How does it work? Enough detail that we could argue about it without reopening the PDF.
+      description: How does it work? Enough detail that you could argue about it without reopening the PDF.
     validations:
       required: true
 
@@ -59,8 +49,8 @@ body:
   - type: textarea
     id: takeaways
     attributes:
-      label: Takeaways for our work
-      description: What we should borrow, avoid, or test against.
+      label: Takeaways for my work
+      description: What to borrow, avoid, or test against.
     validations:
       required: true
 
@@ -79,9 +69,9 @@ body:
   - type: dropdown
     id: rating
     attributes:
-      label: How relevant is this to us
+      label: How relevant is this to my work
       options:
-        - Core — we should build on this
+        - Core — I should build on this
         - Useful — worth keeping in mind
         - Peripheral — read and filed
       default: 1

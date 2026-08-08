@@ -31,8 +31,9 @@ permalink: /papers/
   {% assign sorted = site.papers | sort: "added" | reverse %}
   {% for p in sorted %}
     {%- assign tagstr = p.tags | join: ' ' -%}
+    {%- assign when = p.published | default: p.year -%}
     {%- capture haystack -%}
-      {{ p.title }} {{ p.authors }} {{ p.venue }} {{ p.year }} {{ p.assigned_to }} {{ tagstr }}
+      {{ p.title }} {{ p.authors }} {{ p.venue }} {{ when }} {{ tagstr }}
     {%- endcapture -%}
     <li class="row"
         data-status="{{ p.status | default: 'to-read' }}"
@@ -41,7 +42,8 @@ permalink: /papers/
         <a class="row-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
         <p class="row-sub">
           {%- if p.authors %}{{ p.authors | truncate: 70 }}{% endif -%}
-          {%- if p.year %} &middot; {{ p.year }}{% endif -%}
+          {%- if p.authors and when %} &middot; {% endif -%}
+          {{ when }}
           {%- if p.venue %} &middot; {{ p.venue }}{% endif -%}
         </p>
         {% if p.tags and p.tags.size > 0 %}
@@ -50,7 +52,7 @@ permalink: /papers/
       </div>
       <div class="row-side">
         {% include status.html value=p.status %}
-        {% if p.assigned_to %}<span class="row-who">{{ p.assigned_to }}</span>{% endif %}
+        {% if p.priority %}<span class="prio prio--{{ p.priority | downcase }}">{{ p.priority }}</span>{% endif %}
         {% if p.status != 'summarized' %}
           <a class="row-action" href="{% include new_issue.html template='02-paper-summary.yml' field='paper-id' value=p.uid %}">Summarize</a>
         {% endif %}

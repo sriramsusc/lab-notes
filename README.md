@@ -1,6 +1,6 @@
 # Lab Notes
 
-A shared tracker for the papers we're reading and the tasks we owe each other.
+A tracker for the papers I'm reading and the tasks I'm working on.
 
 **Site:** https://sriramsusc.github.io/lab-notes
 
@@ -56,14 +56,11 @@ corrections, use the **Edit file directly** link at the bottom of any page.
 
 Only the repo owner and collaborators. The bot checks the submitter's
 `author_association` and refuses anything else, which matters because this repo is
-public and anyone can open an issue.
+public and anyone can open an issue. Attribution is taken from the submitting
+GitHub account, so there is nothing to pick from a dropdown.
 
-**To add your professor:** Settings → Collaborators → Add people, then have them
-accept the invite. Also update:
-
-- [`_data/people.yml`](_data/people.yml) — replace the `CHANGE-ME` GitHub username
-- The `Assigned to` / `Who wrote this summary` dropdowns in
-  [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) — these are hardcoded lists
+If you later want someone else contributing, add them under
+Settings → Collaborators — the bot will accept them with no code changes.
 
 ---
 
@@ -74,7 +71,6 @@ _papers/            one markdown file per paper
 _tasks/             one markdown file per task
 _layouts/           page templates (default, paper, task)
 _includes/          small reusable snippets
-_data/people.yml    who can be assigned things
 assets/css/         the entire stylesheet, hand-written, no framework
 index.html          dashboard
 papers.html         filterable paper list
@@ -86,46 +82,51 @@ tasks.html          the shared checklist
 
 ### Front matter reference
 
+Fields marked **(form)** are what the add-paper / add-task forms collect. Everything
+else is either filled in by the bot or added by hand — the layouts render any of
+these if present, so you can enrich a page with the **Edit file directly** link
+without touching any templates.
+
 Papers:
 
 ```yaml
 uid:            attention-is-all-you-need   # stable id, used in URLs and forms
-title:          "Attention Is All You Need"
-authors:        "Vaswani et al."
-year:           "2017"
-venue:          "NeurIPS"
-link:           "https://arxiv.org/abs/1706.03762"
-doi:            "10.48550/arXiv.1706.03762"
+title:          "Attention Is All You Need"    # (form)
+authors:        "Vaswani et al."               # (form, optional)
+published:      "June 2017"                    # (form)
+link:           "https://arxiv.org/abs/1706.03762"   # (form, optional)
+priority:       High | Medium | Low            # (form)
+why:            |-                             # (form) block text
 status:         to-read | reading | summarized
-assigned_to:    "Sriram"
-priority:       High | Medium | Low
-tags:           ["transformers", "attention"]
-why:            |-  (block text — why we're reading it)
 added:          2026-08-01
 added_by:       sriramsusc
 summarized_on:  2026-08-05
-summarized_by:  "Sriram"
-relevance:      "Core — we should build on this"
+summarized_by:  sriramsusc
+relevance:      "Core — I should build on this"
+venue:          "NeurIPS"                      # by hand
+doi:            "10.48550/arXiv.1706.03762"    # by hand
+tags:           ["transformers", "attention"]  # by hand; feeds the search box
 ```
 
 Tasks:
 
 ```yaml
 uid:          reproduce-table-2
-title:        "Reproduce Table 2 on our dataset"
+title:        "Reproduce Table 2 on our dataset"   # (form)
+due:          2026-09-01                           # (form, optional)
+priority:     High | Medium | Low                  # (form)
 status:       open | in-progress | blocked | done
-assigned_to:  "Sriram"
-priority:     High | Medium | Low
-due:          2026-09-01
-paper:        deep-residual-learning   # optional link to a paper page
-tags:         ["experiments"]
 created:      2026-08-07
 created_by:   sriramsusc
 completed_on: 2026-08-20
-completed_by: "Sriram"
+completed_by: sriramsusc
 outcome:      "One-line headline shown on the checklist"
 time_spent:   "~6 hours"
+paper:        deep-residual-learning   # by hand; links to a paper page
+tags:         ["experiments"]          # by hand
 ```
+
+The task description is the body of the file, not a front-matter field.
 
 `status: reading`, `in-progress` and `blocked` aren't offered by the forms — set
 them by editing a file when you want them.

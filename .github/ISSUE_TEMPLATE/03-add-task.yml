@@ -1,14 +1,13 @@
 name: ✅ Add a task
-description: Put something on the shared checklist.
+description: Put something on the checklist.
 title: "[task] "
 labels: ["intake", "task", "new-task"]
 body:
   - type: markdown
     attributes:
       value: |
-        Creates an entry under `_tasks/` and puts it on the open checklist.
-        Closing it later requires a written report, so a clear definition of done here
-        makes that easier.
+        Four fields. Closing a task later requires a written report of what you did,
+        so a description with some substance in it now makes that easier to write.
 
   - type: input
     id: title
@@ -19,26 +18,14 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: assigned
+  - type: textarea
+    id: description
     attributes:
-      label: Assigned to
-      options:
-        - Sriram
-        - Professor
-        - Both of us
-    validations:
-      required: true
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      options:
-        - High
-        - Medium
-        - Low
-      default: 1
+      label: Description
+      description: The scope, plus anything you'll want to remember when you pick it up.
+      placeholder: |
+        Run the released code against our splits and check the numbers land
+        within a point of the reported table. Flag it if the gap is bigger.
     validations:
       required: true
 
@@ -49,36 +36,14 @@ body:
       description: Optional. Use YYYY-MM-DD so it sorts correctly.
       placeholder: "2026-09-01"
 
-  - type: input
-    id: paper
+  - type: dropdown
+    id: priority
     attributes:
-      label: Related paper ID
-      description: Optional. Links this task to a paper page.
-      placeholder: attention-is-all-you-need
-
-  - type: input
-    id: tags
-    attributes:
-      label: Tags
-      description: Comma-separated.
-      placeholder: experiments, writing
-
-  - type: textarea
-    id: description
-    attributes:
-      label: What needs to be done
-      description: The actual scope, plus any context whoever picks this up will need.
-    validations:
-      required: true
-
-  - type: textarea
-    id: done-when
-    attributes:
-      label: Definition of done
-      description: How we will know this is finished. Be concrete — this is what the completion report gets checked against.
-      placeholder: |
-        - Numbers within 1 BLEU of the reported table
-        - Script committed under scripts/
-        - Results written up on the paper page
+      label: Priority
+      options:
+        - High
+        - Medium
+        - Low
+      default: 1
     validations:
       required: true

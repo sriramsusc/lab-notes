@@ -2,7 +2,6 @@
 uid: "read-and-summarize-resnet-paper"
 title: "Read and summarize the ResNet paper"
 status: open
-assigned_to: "Professor"
 priority: "Medium"
 due: 2026-08-21
 paper: "deep-residual-learning"

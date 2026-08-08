@@ -1,13 +1,13 @@
 name: 📄 Add a paper
-description: Put a paper on the reading list. A summary comes later, through its own form.
+description: Put a paper on the reading list. The summary comes later, through its own form.
 title: "[paper] "
 labels: ["intake", "paper", "new-paper"]
 body:
   - type: markdown
     attributes:
       value: |
-        Fills in a new entry under `_papers/`. Everything here becomes page metadata,
-        so it is worth being accurate — you can always edit the file afterwards.
+        Six fields. Anything else you want on the page — venue, DOI, tags, notes —
+        can be added later with the **Edit file directly** link at the bottom of the paper.
 
   - type: input
     id: title
@@ -21,44 +21,23 @@ body:
     id: authors
     attributes:
       label: Authors
-      description: Comma-separated, or "First Author et al."
+      description: Optional. Comma-separated, or "First Author et al."
       placeholder: Vaswani et al.
 
   - type: input
-    id: year
+    id: published
     attributes:
-      label: Year
-      placeholder: "2017"
-
-  - type: input
-    id: venue
-    attributes:
-      label: Venue
-      placeholder: NeurIPS
+      label: Month and year
+      placeholder: June 2017
+    validations:
+      required: true
 
   - type: input
     id: link
     attributes:
       label: Link
-      description: arXiv page, PDF, or publisher URL.
+      description: Optional. arXiv page, PDF, or publisher URL.
       placeholder: https://arxiv.org/abs/1706.03762
-
-  - type: input
-    id: doi
-    attributes:
-      label: DOI
-      placeholder: 10.48550/arXiv.1706.03762
-
-  - type: dropdown
-    id: assigned
-    attributes:
-      label: Who is summarizing it
-      options:
-        - Sriram
-        - Professor
-        - Either of us
-    validations:
-      required: true
 
   - type: dropdown
     id: priority
@@ -69,25 +48,14 @@ body:
         - Medium
         - Low
       default: 1
-
-  - type: input
-    id: tags
-    attributes:
-      label: Tags
-      description: Comma-separated. Used for filtering on the Papers page.
-      placeholder: transformers, attention, nlp
-
-  - type: textarea
-    id: why
-    attributes:
-      label: Why we're reading it
-      description: One or two sentences on how it connects to what we're working on.
-      placeholder: Baseline architecture for the sequence models we want to adapt.
     validations:
       required: true
 
   - type: textarea
-    id: notes
+    id: why
     attributes:
-      label: Initial notes
-      description: Optional. Anything to flag before reading — sections to focus on, related work, prior context.
+      label: Why I'm reading it
+      description: A sentence or two on how it connects to what you're working on.
+      placeholder: Baseline architecture for the sequence models I want to adapt.
+    validations:
+      required: true

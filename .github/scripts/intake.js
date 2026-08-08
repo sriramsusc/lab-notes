@@ -91,18 +91,6 @@ function yblock(key, text) {
   return key + ': |-\n' + lines.map((l) => '  ' + l).join('\n');
 }
 
-function yList(items) {
-  if (!items.length) return null;
-  return '[' + items.map(yq).join(', ') + ']';
-}
-
-function splitTags(raw) {
-  return String(raw || '')
-    .split(/[,\n]/)
-    .map((t) => t.trim().replace(/^#/, ''))
-    .filter(Boolean);
-}
-
 // Drops empty values so the front matter stays readable.
 function frontMatter(pairs) {
   const lines = [];
@@ -226,32 +214,23 @@ function addPaper(f, ctx) {
   if (!slug) return reject('I could not build a filename from the title `' + title + '`. Try a title with some letters or numbers in it.');
 
   const { file, uid } = uniquePath(PAPERS_DIR, slug);
-  const tags = splitTags(field(f, 'Tags'));
-  const assigned = field(f, 'Who is summarizing it');
-  const why = field(f, "Why we're reading it");
-  const notes = field(f, 'Initial notes');
+  const why = field(f, "Why I'm reading it");
 
   const fm = frontMatter([
     ['uid', yq(uid)],
     ['title', yq(title)],
     ['authors', field(f, 'Authors') ? yq(field(f, 'Authors')) : ''],
-    ['year', field(f, 'Year') ? yq(field(f, 'Year')) : ''],
-    ['venue', field(f, 'Venue') ? yq(field(f, 'Venue')) : ''],
+    ['published', field(f, 'Month and year') ? yq(field(f, 'Month and year')) : ''],
     ['link', field(f, 'Link') ? yq(field(f, 'Link')) : ''],
-    ['doi', field(f, 'DOI') ? yq(field(f, 'DOI')) : ''],
     ['status', 'to-read'],
-    ['assigned_to', assigned ? yq(assigned) : ''],
     ['priority', field(f, 'Priority') ? yq(field(f, 'Priority')) : ''],
-    ['tags', yList(tags) || ''],
     ['why', why ? yblock('why', why) : ''],
     ['added', today()],
     ['added_by', yq(ctx.user)],
     ['issue', String(ctx.number)],
   ]);
 
-  const body = notes
-    ? '## Initial notes\n\n' + notes + '\n'
-    : '_No summary yet._\n';
+  const body = '_No summary yet._\n';
 
   fs.mkdirSync(PAPERS_DIR, { recursive: true });
   fs.writeFileSync(file, fm + '\n' + body, 'utf8');
@@ -281,7 +260,7 @@ function paperSummary(f, ctx) {
     ['Problem and motivation', field(f, 'Problem and motivation')],
     ['Method', field(f, 'Method')],
     ['Key results', field(f, 'Key results')],
-    ['Takeaways for our work', field(f, 'Takeaways for our work')],
+    ['Takeaways for my work', field(f, 'Takeaways for my work')],
   ];
 
   const problems = checkDepth(sections, MIN_PAPER_SUMMARY_TOTAL);
@@ -303,8 +282,8 @@ function paperSummary(f, ctx) {
   let nextFm = fm;
   nextFm = setKey(nextFm, 'status', 'summarized');
   nextFm = setKey(nextFm, 'summarized_on', today());
-  nextFm = setKey(nextFm, 'summarized_by', yq(field(f, 'Who wrote this summary') || ctx.user));
-  nextFm = setKey(nextFm, 'relevance', yq(field(f, 'How relevant is this to us')));
+  nextFm = setKey(nextFm, 'summarized_by', yq(ctx.user));
+  nextFm = setKey(nextFm, 'relevance', yq(field(f, 'How relevant is this to my work')));
   nextFm = setKey(nextFm, 'summary_issue', String(ctx.number));
 
   const body = sections.concat(optional)
@@ -334,35 +313,26 @@ function addTask(f, ctx) {
 
   const { file, uid } = uniquePath(TASKS_DIR, slug);
   const due = field(f, 'Target date');
-  const paperRef = field(f, 'Related paper ID');
-  const linkedPaper = paperRef ? findDoc(PAPERS_DIR, paperRef) : null;
 
   const fm = frontMatter([
     ['uid', yq(uid)],
     ['title', yq(title)],
     ['status', 'open'],
-    ['assigned_to', field(f, 'Assigned to') ? yq(field(f, 'Assigned to')) : ''],
     ['priority', field(f, 'Priority') ? yq(field(f, 'Priority')) : ''],
     ['due', /^\d{4}-\d{2}-\d{2}$/.test(due) ? due : (due ? yq(due) : '')],
-    ['paper', linkedPaper ? yq(linkedPaper.uid) : ''],
-    ['tags', yList(splitTags(field(f, 'Tags'))) || ''],
     ['created', today()],
     ['created_by', yq(ctx.user)],
     ['issue', String(ctx.number)],
   ]);
 
-  const body =
-    '## What needs to be done\n\n' + field(f, 'What needs to be done') + '\n\n' +
-    '## Definition of done\n\n' + field(f, 'Definition of done') + '\n';
+  const body = field(f, 'Description') + '\n';
 
   fs.mkdirSync(TASKS_DIR, { recursive: true });
   fs.writeFileSync(file, fm + '\n' + body, 'utf8');
 
-  let note = '';
-  if (paperRef && !linkedPaper) {
-    note = '\n\n> I could not match the related paper `' + paperRef + '`, so I left that field off. ' +
-      'You can add it by editing the file.';
-  }
+  const note = /^\d{4}-\d{2}-\d{2}$/.test(due) || !due ? '' :
+    '\n\n> I could not read `' + due + '` as a date, so it will not sort with the others. ' +
+    'Use `YYYY-MM-DD` if you want it to.';
 
   return {
     status: 'ok',
@@ -414,7 +384,7 @@ function completeTask(f, ctx) {
   let nextFm = fm;
   nextFm = setKey(nextFm, 'status', 'done');
   nextFm = setKey(nextFm, 'completed_on', today());
-  nextFm = setKey(nextFm, 'completed_by', yq(field(f, 'Who did the work') || ctx.user));
+  nextFm = setKey(nextFm, 'completed_by', yq(ctx.user));
   nextFm = setKey(nextFm, 'outcome', yq(field(f, 'One-line outcome')));
   nextFm = setKey(nextFm, 'completion_issue', String(ctx.number));
   if (field(f, 'Rough time spent')) {
@@ -424,7 +394,7 @@ function completeTask(f, ctx) {
   const report =
     '<!-- completion-report:start -->\n' +
     '## Completion report\n\n' +
-    '_Filed by ' + (field(f, 'Who did the work') || ctx.user) + ' on ' + today() +
+    '_Filed ' + today() +
     ' via [issue #' + ctx.number + '](https://github.com/' + ctx.repo + '/issues/' + ctx.number + ')._\n\n' +
     '**' + field(f, 'One-line outcome') + '**\n\n' +
     sections.concat(optional)

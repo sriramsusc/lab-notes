@@ -2,12 +2,11 @@
 uid: "attention-is-all-you-need"
 title: "Attention Is All You Need"
 authors: "Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin"
-year: "2017"
+published: "June 2017"
 venue: "NeurIPS"
 link: "https://arxiv.org/abs/1706.03762"
 doi: "10.48550/arXiv.1706.03762"
 status: summarized
-assigned_to: "Sriram"
 priority: "High"
 tags: ["transformers", "attention", "architectures"]
 why: |-
@@ -18,7 +17,7 @@ added_by: sriramsusc
 issue: 1
 summarized_on: 2026-08-05
 summarized_by: "Sriram"
-relevance: "Core — we should build on this"
+relevance: "Core — I should build on this"
 ---
 
 ## Problem and motivation
@@ -55,7 +54,7 @@ reduced too far, and that learned positional embeddings perform about the same a
 the sinusoidal ones. A constituency parsing experiment suggests the architecture
 generalizes past translation.
 
-## Takeaways for our work
+## Takeaways for my work
 
 The practical lesson is that removing a sequential dependency can buy more than a
 better inductive bias does — the win here is as much about training throughput as

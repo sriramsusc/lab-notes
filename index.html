@@ -53,8 +53,8 @@ nav: home
             <a class="card-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
             <p class="card-meta">
               {% include status.html value=p.status %}
-              {% if p.assigned_to %}<span>&rarr; {{ p.assigned_to }}</span>{% endif %}
-              {% if p.year %}<span>{{ p.year }}</span>{% endif %}
+              {% if p.priority %}<span class="prio prio--{{ p.priority | downcase }}">{{ p.priority }}</span>{% endif %}
+              {% assign when = p.published | default: p.year %}{% if when %}<span>{{ when }}</span>{% endif %}
             </p>
           </li>
         {% endfor %}
@@ -75,7 +75,7 @@ nav: home
             <a class="card-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
             <p class="card-meta">
               {% include status.html value=t.status %}
-              {% if t.assigned_to %}<span>&rarr; {{ t.assigned_to }}</span>{% endif %}
+              {% if t.priority %}<span class="prio prio--{{ t.priority | downcase }}">{{ t.priority }}</span>{% endif %}
               {% if t.due %}<span>due {{ t.due }}</span>{% endif %}
             </p>
           </li>
@@ -89,8 +89,8 @@ nav: home
 <section class="how">
   <h2 class="section-rule">How this works</h2>
   <ol class="steps">
-    <li><strong>You fill in a form.</strong> Each button above opens a structured GitHub issue form with the fields we care about.</li>
-    <li><strong>A bot checks it.</strong> It confirms you're a collaborator and that summaries and completion reports are actually substantial &mdash; thin ones get bounced back with a comment.</li>
+    <li><strong>You fill in a form.</strong> Each button above opens a short GitHub issue form.</li>
+    <li><strong>A bot checks it.</strong> Summaries and completion reports have to be substantial &mdash; thin ones get bounced back with a comment saying what to expand.</li>
     <li><strong>It becomes a file.</strong> The bot commits a markdown file to <code>_papers/</code> or <code>_tasks/</code> with your metadata in the front matter, then closes the issue.</li>
     <li><strong>The site rebuilds.</strong> This page updates within a minute or two.</li>
   </ol>

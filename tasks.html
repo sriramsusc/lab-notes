@@ -10,7 +10,7 @@ permalink: /tasks/
 <section class="page-head">
   <div>
     <h1>Tasks</h1>
-    <p class="lede">A shared checklist. Ticking something off requires a written account of what was done &mdash; that write-up becomes the task's page.</p>
+    <p class="lede">Ticking something off requires a written account of what was done &mdash; that write-up becomes the task's page.</p>
   </div>
   <a class="btn btn--primary" href="{% include new_issue.html template='03-add-task.yml' %}">+ Add a task</a>
 </section>
@@ -28,7 +28,6 @@ permalink: /tasks/
             <a class="row-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
             <p class="row-sub">
               {% include status.html value=t.status %}
-              {% if t.assigned_to %}<span class="row-who">{{ t.assigned_to }}</span>{% endif %}
               {% if t.priority %}<span class="prio prio--{{ t.priority | downcase }}">{{ t.priority }}</span>{% endif %}
               {% if t.due %}<span>due {{ t.due }}</span>{% endif %}
               {% if t.created %}<span>opened {{ t.created }}</span>{% endif %}
@@ -53,7 +52,6 @@ permalink: /tasks/
           <div class="check-main">
             <a class="row-title" href="{{ t.url | relative_url }}">{{ t.title }}</a>
             <p class="row-sub">
-              {% if t.completed_by %}<span class="row-who">{{ t.completed_by }}</span>{% endif %}
               {% if t.completed_on %}<span>completed {{ t.completed_on }}</span>{% endif %}
               {% if t.time_spent %}<span>{{ t.time_spent }}</span>{% endif %}
             </p>

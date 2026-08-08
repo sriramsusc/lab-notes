@@ -9,7 +9,8 @@ nav: papers
   <header class="doc-head">
     {% include status.html value=page.status %}
     <h1>{{ page.title }}</h1>
-    {% if page.authors %}<p class="doc-byline">{{ page.authors }}{% if page.year %} &middot; {{ page.year }}{% endif %}{% if page.venue %} &middot; <em>{{ page.venue }}</em>{% endif %}</p>{% endif %}
+    {%- assign when = page.published | default: page.year -%}
+    {% if page.authors or when %}<p class="doc-byline">{{ page.authors }}{% if page.authors and when %} &middot; {% endif %}{{ when }}{% if page.venue %} &middot; <em>{{ page.venue }}</em>{% endif %}</p>{% endif %}
   </header>
 
   <dl class="meta-grid">
@@ -19,10 +20,9 @@ nav: papers
     {% if page.doi %}
       <div><dt>DOI</dt><dd><a href="https://doi.org/{{ page.doi }}" rel="noopener">{{ page.doi }}</a></dd></div>
     {% endif %}
-    {% if page.assigned_to %}<div><dt>Assigned to</dt><dd>{{ page.assigned_to }}</dd></div>{% endif %}
     {% if page.priority %}<div><dt>Priority</dt><dd>{{ page.priority }}</dd></div>{% endif %}
-    {% if page.added %}<div><dt>Added</dt><dd>{{ page.added }}{% if page.added_by %} by {{ page.added_by }}{% endif %}</dd></div>{% endif %}
-    {% if page.summarized_on %}<div><dt>Summarized</dt><dd>{{ page.summarized_on }}{% if page.summarized_by %} by {{ page.summarized_by }}{% endif %}</dd></div>{% endif %}
+    {% if page.added %}<div><dt>Added</dt><dd>{{ page.added }}</dd></div>{% endif %}
+    {% if page.summarized_on %}<div><dt>Summarized</dt><dd>{{ page.summarized_on }}</dd></div>{% endif %}
     {% if page.issue %}<div><dt>Source</dt><dd><a href="https://github.com/{{ site.repository }}/issues/{{ page.issue }}" rel="noopener">Issue #{{ page.issue }}</a></dd></div>{% endif %}
   </dl>
 
@@ -32,7 +32,7 @@ nav: papers
 
   {% if page.why %}
     <section class="callout">
-      <h2>Why we're reading it</h2>
+      <h2>Why I'm reading it</h2>
       {{ page.why | markdownify }}
     </section>
   {% endif %}
